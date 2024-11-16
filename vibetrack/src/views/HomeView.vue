@@ -1,6 +1,7 @@
 <script setup>
 import MixesInspiredBy from '@/components/MixesInspiredBy.vue';
 import MultiArtistSelect from '@/components/MultiArtistSelect.vue';
+import CustomCarousel from '@/components/CustomCarousel.vue';
 </script>
 
 <template>
@@ -150,6 +151,52 @@ import MultiArtistSelect from '@/components/MultiArtistSelect.vue';
           }"
         />
       </div>
+    </div>
+
+    <div class="px-8 mt-8 min-w-[800px]">
+      <div class="py-3"></div>
+
+      <p class="text-center pb-6 text-[#D1D1D6] text-sm">Unlock Flow by selecting your favourite artists for improved</p>
+
+      <div class="flex justify-center gap-7 w-full">
+        <div class="flex items-center justify-center relative">
+          <img width="100" class="absolute -left-36 rounded-full z-0 cursor-pointer" src="https://picsum.photos/id/76/300/300">
+          <img width="115" class="absolute -left-[80px] rounded-full z-10 cursor-pointer" src="https://picsum.photos/id/76/300/300">
+          <img width="160" class="rounded-full z-0 cursor-pointer" src="https://picsum.photos/id/76/300/300">
+          <img width="115" class="absolute -right-[80px] rounded-full z-10 cursor-pointer" src="https://picsum.photos/id/76/300/300">
+          <img width="100" class="absolute -right-36 rounded-full z-0 cursor-pointer" src="https://picsum.photos/id/76/300/300">
+        </div>
+      </div>
+
+      <div class="w-full flex justify-center p-3">
+        <button
+          type="button"
+          class="text-white text-[15px] font-semibold rounded-full bg-[#EF5465] hover:bg-[#d8384a] px-8 py-2 text-center"
+        >
+          ADD ARTIST
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-8 min-w-[800px]">
+      <CustomCarousel 
+        category="New releases for you"
+        :data = "[
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+          { url: 'https://picsum.photos/id/45/300/300', song: 'Something', by: '', releasedOn: ''},
+        ]"
+      />
     </div>
   </div>
 </template>
