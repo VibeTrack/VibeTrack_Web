@@ -5,6 +5,7 @@ import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
 import ClockTimeFiveOutline from 'vue-material-design-icons/ClockTimeFiveOutline.vue';
+import SongRow from '@/components/SongRow.vue';
 import artist from '../artist.json'
 
 import { useSongStore } from '@/stores/song';
@@ -111,6 +112,10 @@ const playFunc = () => {
       <div class="text-xs font-light text-[#aeaeae]">TRACK</div>
       <ClockTimeFiveOutline fill-color="#aeaeae" :size="20" />
     </div>
+
+    <ul class="w-full mx-8 pr-16 min-w-[650px]" v-for="track in artist.tracks" :key="track">
+      <SongRow v-if="track" :track="track" />
+    </ul>
 
   </div>
 </template>
