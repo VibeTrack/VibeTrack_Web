@@ -1,16 +1,16 @@
 <script setup>
+import SongRow from '../components/SongRow.vue';
+
 import Magnify from 'vue-material-design-icons/Magnify.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
 import ClockTimeFiveOutline from 'vue-material-design-icons/ClockTimeFiveOutline.vue';
-import SongRow from '@/components/SongRow.vue';
 import artist from '../artist.json'
 
-import { useSongStore } from '@/stores/song';
+import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
-
 const useSong = useSongStore()
 const { isPlaying, currentTrack, currentArtist } = storeToRefs(useSong)
 
@@ -57,8 +57,7 @@ const playFunc = () => {
     </div>
 
     <div class="mt-11"></div>
-
-    <div class="flex justify-between pt-2 min-2-[650px]">
+    <div class="flex justify-between pt-2 min-w-[650px]">
       <ul class="flex items-center justify-start w-full text-gray-400 h-9">
         <li class="pl-8">
           <button
@@ -96,11 +95,12 @@ const playFunc = () => {
   <div class="border-b border-b-[#302d2d]"></div>
   <div class="mb-10"></div>
 
-  <div id="SongSection" class="max-w-[1500px] mx-auto">
+  <div id="SongsSection" class="max-w-[1500px] mx-auto">
     <div class="pl-8">
       <div class="text-white text-3xl font-semibold mb-7">Top tracks</div>
+
       <div class="flex items-center border border-[#525254] bg-[#23232D] rounded-sm text-[#c9c9c9] w-[300px]">
-        <Magnify fill-color="#9B9BA1" class="px-1" />
+        <Magnify fillColor="#9B9BA1" class="px-1" />
         <input class="w-full py-[5px] bg-[#23232D] text-sm placeholder-[#7e7e7e] outline-none ring-0 hover:ring-0"
           type="text" placeholder="Search within tracks">
       </div>
@@ -110,12 +110,21 @@ const playFunc = () => {
 
     <div class="flex items-center justify-between min-w-[590px] mx-8 border-b border-b-[#302d2d] py-2.5 px-1.5">
       <div class="text-xs font-light text-[#aeaeae]">TRACK</div>
-      <ClockTimeFiveOutline fill-color="#aeaeae" :size="20" />
+      <ClockTimeFiveOutline fillColor="#aeaeae" :size="20" />
     </div>
 
     <ul class="w-full mx-8 pr-16 min-w-[650px]" v-for="track in artist.tracks" :key="track">
       <SongRow v-if="track" :track="track" />
     </ul>
-
   </div>
+  <div class="mb-40"></div>
 </template>
+
+<style scoped>
+.circle {
+  width: 4px;
+  height: 4px;
+  background-color: rgb(189, 189, 189);
+  border-radius: 100%;
+}
+</style>
