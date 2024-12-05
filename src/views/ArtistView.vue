@@ -57,54 +57,12 @@ const playFunc = () => {
     </div>
 
     <div class="mt-11"></div>
-    <div class="flex justify-between pt-2 min-w-[650px]">
-      <ul class="flex items-center justify-start w-full text-gray-400 h-9">
-        <li class="pl-8">
-          <button
-            class="font-light cursor-pointer text-[#bebebe] border-b-2 border-b-[#121216] hover:border-b-[#FFFFFF] pb-[8px] hover:text-[#FFFFFF]">
-            Discography
-          </button>
-        </li>
-        <li class="text-[#FFFFFF] pl-10">
-          <button class="font-semibold cursor-pointer border-b-2 border-b-[#EF5465] pb-[8px]">
-            Top tracks
-          </button>
-        </li>
-        <li class="pl-10">
-          <button
-            class="font-light cursor-pointer text-[#bebebe] border-b-2 border-b-[#121216] hover:border-b-[#FFFFFF] pb-[8px] hover:text-[#FFFFFF]">
-            Similar artists
-          </button>
-        </li>
-        <li class="pl-10">
-          <button
-            class="font-light cursor-pointer text-[#bebebe] border-b-2 border-b-[#121216] hover:border-b-[#FFFFFF] pb-[8px] hover:text-[#FFFFFF]">
-            Playlists
-          </button>
-        </li>
-        <li class="pl-10">
-          <button
-            class="font-light cursor-pointer text-[#bebebe] border-b-2 border-b-[#121216] hover:border-b-[#FFFFFF] pb-[8px] hover:text-[#FFFFFF]">
-            Bio
-          </button>
-        </li>
-      </ul>
-    </div>
   </div>
 
   <div class="border-b border-b-[#302d2d]"></div>
   <div class="mb-10"></div>
 
   <div id="SongsSection" class="max-w-[1500px] mx-auto">
-    <div class="pl-8">
-      <div class="text-white text-3xl font-semibold mb-7">Top tracks</div>
-
-      <div class="flex items-center border border-[#525254] bg-[#23232D] rounded-sm text-[#c9c9c9] w-[300px]">
-        <Magnify fillColor="#9B9BA1" class="px-1" />
-        <input class="w-full py-[5px] bg-[#23232D] text-sm placeholder-[#7e7e7e] outline-none ring-0 hover:ring-0"
-          type="text" placeholder="Search within tracks">
-      </div>
-    </div>
 
     <div class="mb-4"></div>
 

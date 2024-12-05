@@ -16,7 +16,7 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:8080/identity/auth/login', {
+    const response = await fetch('http://localhost:8080/api/v1/identity/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +41,6 @@ const handleLogin = async () => {
     const data = await response.json();
     console.log('Login successful:', data);
 
-    // Redirect to the home page after successful login
     router.push('/');
   } catch (err) {
     error.value = 'An error occurred. Please try again later.';

@@ -23,7 +23,7 @@ const router = createRouter({
       component: App,
       children: [
         {
-          path: '',
+          path: 'home',
           name: 'home',
           component: HomeView,
         },
@@ -32,9 +32,36 @@ const router = createRouter({
           name: 'artist',
           component: ArtistView,
         },
+        {
+          path: 'podcasts',
+          name: 'podcasts',
+          component: HomeView,
+        },
+        {
+          path: 'favourite',
+          name: 'favourite',
+          component: ArtistView,
+        },
       ],
+    },
+    {
+      path: '/', // Route mặc định
+      redirect: { name: 'login' }, // Chuyển hướng đến login
+    },
+    {
+      path: '/:catchAll(.*)', // Wildcard route cho các URL không tồn tại
+      redirect: { name: 'login' },
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
+
 
 export default router;
