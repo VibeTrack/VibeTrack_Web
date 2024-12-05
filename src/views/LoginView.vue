@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
 
 const router = useRouter();
 const username = ref('');
@@ -26,10 +29,8 @@ const handleLogin = async () => {
         password: password.value,
       }),
     });
-
     if (!response.ok) {
       const errorData = await response.json();
-
       if (errorData.message === 'Unauthenticated') {
         error.value = 'Incorrect username or password.';
       } else {
@@ -39,9 +40,9 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-    console.log('Login successful:', data);
-
-    router.push('/');
+    console.log('Login successful:', data.result.token);
+    authStore.setAuthData(data.result.token);
+    router.push('/home');
   } catch (err) {
     error.value = 'An error occurred. Please try again later.';
     console.error(err);

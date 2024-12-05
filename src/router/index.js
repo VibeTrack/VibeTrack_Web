@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue';
 import ArtistView from '../views/ArtistView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
+import ProfileView from '@/views/ProfileView.vue';
+import EditView from '@/views/EditView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,7 +44,17 @@ const router = createRouter({
           name: 'favourite',
           component: ArtistView,
         },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfileView,
+        },
       ],
+    },
+    {
+      path: '/edit-name',
+      name: 'EditName',
+      component: EditView,
     },
     {
       path: '/', // Route mặc định

@@ -1,7 +1,8 @@
 {
-  "name": "Diaries Of A Hero",
+  "name": "Ten Album",
   "albumCover": "/images/albumCovers/DiariesOfAHero.png",
   "releaseYear": "2014",
+  "artist": "Ten tac gia",
   "tracks": [
     {
       "id": 1,
@@ -48,7 +49,7 @@
     {
       "id": 8,
       "name": "Get Away",
-      "path": "https://drive.google.com/file/d/1a3PmK6ymRzMQuzdaP--gridOA2KsMSJ-/view?usp=sharing",
+      "path": "/songs/Get Away.mp3",
       "lyrics": false
     },
     {

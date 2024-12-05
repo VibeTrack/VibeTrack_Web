@@ -13,10 +13,6 @@
         <div class="absolute z-10 p-2 rounded-full bg-white inline-block">
           <Play :size="33" />
         </div>
-        <div class="absolute z-30 flex items-center bottom-1 left-0 h-7 ml-1 bg-black rounded-full px-2 bg-opacity-10">
-          <img width="30" class="pr-2 opacity-[0.75] brightness-[1.2]" src="/images/sound-icon.png">
-          <div class=" text-white font-bold text-[21px]">{{ category }}</div>
-        </div>
       </div>
     </RouterLink>
     <div class="h-2"></div>
@@ -36,6 +32,6 @@ import Play from 'vue-material-design-icons/Play.vue'
 
 let isHover = ref(false)
 
-const props = defineProps({ category: String, images: Object, text: String, to: String })
-const { category, images, text, to } = toRefs(props)
+const props = defineProps({ images: Object, text: String, to: String })
+const { images, text, to } = toRefs(props)
 </script>

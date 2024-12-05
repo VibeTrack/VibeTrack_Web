@@ -42,7 +42,7 @@ onMounted(() => {
             loadmetadata()
         }, 300)
     }
-    if (currentTrack.value) { 
+    if (currentTrack.value) {
         seeker.value.addEventListener("change", function () {
             const time = audio.value.duration * (seeker.value.value / 100);
             audio.value.currentTime = time;
@@ -68,7 +68,7 @@ const timeupdate = () => {
     audio.value.addEventListener("timeupdate", function () {
         var minutes = Math.floor(audio.value.currentTime / 60);
         var seconds = Math.floor(audio.value.currentTime - minutes * 60);
-        isTrackTimeCurrent.value = minutes+':'+seconds.toString().padStart(2, '0')
+        isTrackTimeCurrent.value = minutes + ':' + seconds.toString().padStart(2, '0')
         trackTime.value = isTrackTimeCurrent.value
         const value = (100 / audio.value.duration) * audio.value.currentTime;
         range.value = value
@@ -76,11 +76,11 @@ const timeupdate = () => {
     });
 }
 const loadmetadata = () => {
-    audio.value.addEventListener('loadedmetadata', function() {
+    audio.value.addEventListener('loadedmetadata', function () {
         const duration = audio.value.duration;
         const minutes = Math.floor(duration / 60);
         const seconds = Math.floor(duration % 60);
-        isTrackTimeTotal.value = minutes+':'+seconds.toString().padStart(2, '0')
+        isTrackTimeTotal.value = minutes + ':' + seconds.toString().padStart(2, '0')
     });
 }
 watch(() => audio.value, () => {
@@ -100,13 +100,22 @@ watch(() => currentTrack.value.id, (val) => {
     }
     isLyrics.value = false
 })
+
+const openLyrics = (track, artist) => {
+    if (audio.value && !audio.value.paused && track.id === currentTrack.value.id) {
+        isLyrics.value = true
+    } else if (audio.value && audio.value.paused && track.id === currentTrack.value.id) {
+        useSong.playOrPauseSong()
+        isLyrics.value = true
+    } else {
+        useSong.playOrPauseThisSong(artist, track)
+        setTimeout(() => isLyrics.value = true, 500)
+    }
+}
 </script>
 
 <template>
-    <div
-        id="MusicPlayer"
-        v-if="audio"
-        class="
+    <div id="MusicPlayer" v-if="audio" class="
             fixed
             flex
             min-w-[1000px]
@@ -119,32 +128,21 @@ watch(() => currentTrack.value.id, (val) => {
             bg-[#23232D]
             border-t
             border-t-[#383838]
-        "
-    >
+        ">
         <div class="flex items-center w-2/12">
             <div class="flex items-center justify-center h-[30px] pl-4">
-                <button 
-                    type="button"
-                    :disabled="currentTrack.id === 1"
-                    :class="{'rounded-full hover:bg-[#363636]': currentTrack.id !== 1}"
-                    class="mx-2 p-2"
-                    @click="useSong.prevSong(currentTrack)"
-                >
-                    <SkipBackward :fillColor="currentTrack.id === 1 ? '#747474' : '#FFFFFF'" :size="25"/>
+                <button type="button" :disabled="currentTrack.id === 1"
+                    :class="{ 'rounded-full hover:bg-[#363636]': currentTrack.id !== 1 }" class="mx-2 p-2"
+                    @click="useSong.prevSong(currentTrack)">
+                    <SkipBackward :fillColor="currentTrack.id === 1 ? '#747474' : '#FFFFFF'" :size="25" />
                 </button>
-                <button 
-                    type="button"
-                    class="p-2 rounded-full hover:bg-[#363636]" 
-                    @click="useSong.playOrPauseThisSong(currentArtist, currentTrack)"
-                >
+                <button type="button" class="p-2 rounded-full hover:bg-[#363636]"
+                    @click="useSong.playOrPauseThisSong(currentArtist, currentTrack)">
                     <Play v-if="!isPlaying" fillColor="#FFFFFF" :size="45" />
                     <Pause v-else fillColor="#FFFFFF" :size="45" />
                 </button>
-                <button 
-                    type="button"
-                    class="mx-2 p-2 rounded-full hover:bg-[#363636]" 
-                    @click="useSong.nextSong(currentTrack)"
-                >
+                <button type="button" class="mx-2 p-2 rounded-full hover:bg-[#363636]"
+                    @click="useSong.nextSong(currentTrack)">
                     <SkipForward fillColor="#FFFFFF" :size="25" />
                 </button>
             </div>
@@ -165,30 +163,16 @@ watch(() => currentTrack.value.id, (val) => {
                     <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
                         <HeartOutline fillColor="#FFFFFF" :size="20" />
                     </div>
-                    <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                        <Tune fillColor="#FFFFFF" :size="20" />
-                    </div>
                 </div>
             </div>
 
             <div class="flex items-center">
-                <div 
-                    v-if="isTrackTimeCurrent" 
-                    class="text-[#8a8a8a] text-[10px] pr-2 relative -bottom-[5px]"
-                >
+                <div v-if="isTrackTimeCurrent" class="text-[#8a8a8a] text-[10px] pr-2 relative -bottom-[5px]">
                     {{ isTrackTimeCurrent }}
                 </div>
-                <div
-                    ref="seekerContainer"
-                    class="w-full relative mt-2 mb-3"
-                    @mouseenter="isHover = true"
-                    @mouseleave="isHover = false"
-                >
-                    <input
-                        v-model="range"
-                        ref="seeker"
-                        type="range"
-                        class="
+                <div ref="seekerContainer" class="w-full relative mt-2 mb-3" @mouseenter="isHover = true"
+                    @mouseleave="isHover = false">
+                    <input v-model="range" ref="seeker" type="range" class="
                             absolute
                             rounded-full
                             my-[7px]
@@ -199,27 +183,17 @@ watch(() => currentTrack.value.id, (val) => {
                             bg-opacity-100
                             focus:outline-none
                             cursor-pointer
-                        "
-                        :class="
-                            { 'rangeDotHidden': !isHover },
+                        " :class="{ 'rangeDotHidden': !isHover },
                             { 'rangeDot': isHover }
-                        "
-                    >
-                    <div
-                        class="pointer-events-none rounded-full absolute z-10 inset-y-0 left-0 w-0"
+                            ">
+                    <div class="pointer-events-none rounded-full absolute z-10 inset-y-0 left-0 w-0"
                         :style="`width: ${range}%; background-color: ${randColor.color}`"
-                        :class="isHover ? 'h-[4px] mt-[5px]' : 'h-[2px] mt-[6px]'"
-                    />
-                    <div 
-                        :class="isHover ? 'h-[4px] mt-[5px]' : 'h-[2px] mt-[6px]'"
-                        class="absolute z-[-0] inset-y-0 left-0 w-full bg-[#c4c4c4] rounded-full" 
-                    />
+                        :class="isHover ? 'h-[4px] mt-[5px]' : 'h-[2px] mt-[6px]'" />
+                    <div :class="isHover ? 'h-[4px] mt-[5px]' : 'h-[2px] mt-[6px]'"
+                        class="absolute z-[-0] inset-y-0 left-0 w-full bg-[#c4c4c4] rounded-full" />
 
                 </div>
-                <div 
-                    v-if="isTrackTimeTotal" 
-                    class="text-[#8a8a8a] text-[10px] pl-2 relative -bottom-[5px]"
-                >
+                <div v-if="isTrackTimeTotal" class="text-[#8a8a8a] text-[10px] pl-2 relative -bottom-[5px]">
                     {{ isTrackTimeTotal }}
                 </div>
             </div>
@@ -227,35 +201,23 @@ watch(() => currentTrack.value.id, (val) => {
 
         <div class="flex items-center w-1/4 justify-end pr-6 ">
             <div class="flex items-center">
-                <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                    <PictureInPictureBottomRight class="block" fillColor="#FFFFFF" :size="17" />
+                <div v-if="currentTrack.lyrics" @click="openLyrics(currentTrack, currentArtist)"
+                    class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
+                    <MicrophoneVariant class="block" fillColor="#FFFFFF" :size="17" />
                 </div>
                 <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
                     <ShuffleVariant class="block" fillColor="#FFFFFF" :size="17" />
                 </div>
-                <div 
-                    @mouseenter="isVolumeHover = true" 
-                    @mouseleave="isVolumeHover = false" 
-                    class="relative"
-                >
+                <div @mouseenter="isVolumeHover = true" @mouseleave="isVolumeHover = false" class="relative">
                     <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
                         <VolumeHigh v-if="currentVolume > 0" class="block" fillColor="#FFFFFF" :size="17" />
                         <VolumeMute v-else class="block" fillColor="#FFFFFF" :size="17" />
                     </div>
-                    <div 
-                        v-show="isVolumeHover"
-                        class="absolute -top-12 -left-20 p-2 px-4 bg-[#2a2a37] rounded-xl shadow-xl"
-                    >
+                    <div v-show="isVolumeHover"
+                        class="absolute -top-12 -left-20 p-2 px-4 bg-[#2a2a37] rounded-xl shadow-xl">
                         <MusicPlayerVolume />
                     </div>
                 </div>
-                <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                    <Tune class="block" fillColor="#FFFFFF" :size="17" />
-                </div>
-            </div>
-            <div class="flex items-center ml-6 border-l border-l-[#363636]">
-                <img class="rounded-sm ml-6" width="28" :src="currentArtist.albumCover">
-                <div class="text-xs ml-1.5 text-white font-light">Queue</div>
             </div>
         </div>
     </div>
