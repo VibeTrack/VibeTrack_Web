@@ -7,7 +7,7 @@
     {
       "id": 1,
       "name": "Intro",
-      "path": "/songs/Intro.mp3",
+      "path": "",
       "lyrics": false
     },
     {
@@ -31,8 +31,9 @@
     {
       "id": 5,
       "name": "Throne",
-      "path": "/songs/Throne.mp3",
-      "lyrics": true
+      "path": "http://192.168.201.109:9002/aurora/audio/1.mp3",
+      "lyrics": true,
+      "images": ""
     },
     {
       "id": 6,

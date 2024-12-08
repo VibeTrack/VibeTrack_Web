@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// State để lưu tên mới
 const newName = ref('');
 const router = useRouter();
 
@@ -12,7 +11,7 @@ const handleSave = () => {
     return;
   }
   console.log('Saved name:', newName.value);
-  router.push('/profile'); // Quay lại trang profile
+  router.push('/profile'); 
 };
 
 const handleCancel = () => {

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { API_BASE_URL } from '../../constants';
 
 const router = useRouter();
 const username = ref('');
@@ -36,7 +37,7 @@ const handleRegister = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:8080/identity/auth/register', {
+    const response = await fetch(`${API_BASE_URL}identity/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

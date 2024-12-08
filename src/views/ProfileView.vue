@@ -7,8 +7,10 @@ import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 // const changeProfile = () => {
 //   try {
@@ -38,6 +40,7 @@ const router = useRouter();
 const profile = async () => {
   router.push('/home');
 };
+const link = "https://i.scdn.co/image/1e626ce84397ca38f1b6722d6658417082f6aa28"
 
 let name = 'Bùi Minh Quân'
 
@@ -51,6 +54,22 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file);
   }
 };
+
+// try {
+//   const response = await fetch('', {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       token: authStore.token,
+//     }),
+//   })
+//   console.log()
+
+// } catch (error) {
+//   console.error('Error during:', error);
+// }
 
 </script>
 
@@ -97,34 +116,15 @@ const handleFileUpload = (event) => {
 
         <div class="flex justify-start gap-7 ">
           <MultiArtistSelect class="w-1/4"
-            text="Featuring Bring Me the Horizon, Our Last Night, Bad Omens, The Retaliators" to="/artist" :images="{
-              one: 'https://picsum.photos/id/45/300/300',
-              two: 'https://picsum.photos/id/55/300/300',
-              three: 'https://picsum.photos/id/54/300/300',
-              four: 'https://picsum.photos/id/76/300/300',
-            }" />
+            text="Featuring Bring Me the Horizon, Our Last Night, Bad Omens, The Retaliators" to="/artist"
+            :images=artist.albumCover />
           <MultiArtistSelect class="w-1/4"
             text="Featuring Metallica, Jessye Norman, Dresdner Philharmonie, San Francisco Symphony" to="/artist"
-            :images="{
-              one: 'https://picsum.photos/id/123/300/300',
-              two: 'https://picsum.photos/id/141/300/300',
-              three: 'https://picsum.photos/id/111/300/300',
-              four: 'https://picsum.photos/id/212/300/300',
-            }" />
+            :images=link />
           <MultiArtistSelect class="w-1/4" text="Featuring Panter, Alden Karik, Arturiko, Krista Masalta" to="/artist"
-            :images="{
-              one: 'https://picsum.photos/id/65/300/300',
-              two: 'https://picsum.photos/id/98/300/300',
-              three: 'https://picsum.photos/id/78/300/300',
-              four: 'https://picsum.photos/id/74/300/300',
-            }" />
+            :images=artist.albumCover />
           <MultiArtistSelect class="w-1/4" text="Featuring Machine Gun Kelly, Girlfriends, Mod Sun, Chri$tian Gate$"
-            to="/artist" :images="{
-              one: 'https://picsum.photos/id/242/300/300',
-              two: 'https://picsum.photos/id/121/300/300',
-              three: 'https://picsum.photos/id/221/300/300',
-              four: 'https://picsum.photos/id/188/300/300',
-            }" />
+            to="/artist" :images=artist.albumCover />
         </div>
       </div>
 

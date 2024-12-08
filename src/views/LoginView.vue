@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { API_BASE_URL } from '../../constants';
 
 const authStore = useAuthStore();
 
@@ -19,7 +20,7 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:8080/api/v1/identity/auth/login', {
+    const response = await fetch(`${API_BASE_URL}identity/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,8 +41,8 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-    console.log('Login successful:', data.result.token);
-    authStore.setAuthData(data.result.token);
+    console.log('Login successful:', data.result.user);
+    authStore.setAuthData(data.result.token, data.result.user);
     router.push('/home');
   } catch (err) {
     error.value = 'An error occurred. Please try again later.';

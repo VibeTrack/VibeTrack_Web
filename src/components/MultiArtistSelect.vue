@@ -6,10 +6,7 @@
         <div
           :class="isHover ? 'transition ease-in duration-150 bg-opacity-20' : 'transition ease-out duration-150 bg-opacity-5'"
           class="absolute w-full h-full bg-black z-10 rounded-md" />
-        <img class="absolute contrast-[0.55] right-0 top-0 w-1/2" :src="images.one">
-        <img class="absolute contrast-[0.55] left-0 top-0 w-1/2" :src="images.two">
-        <img class="absolute contrast-[0.55] right-0 bottom-0 w-1/2" :src="images.three">
-        <img class="absolute contrast-[0.55] left-0 bottom-0 w-1/2" :src="images.four">
+        <img class="absolute right-0 top-0" :src="images">
         <div class="absolute z-10 p-2 rounded-full bg-white inline-block">
           <Play :size="33" />
         </div>

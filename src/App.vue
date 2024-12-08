@@ -8,6 +8,7 @@ import Magnify from 'vue-material-design-icons/Magnify.vue';
 import SideMenuItem from './components/SideMenuItem.vue';
 import MusicPlayer from './components/MusicPlayer.vue';
 import SongLyrics from './components/SongLyrics.vue';
+import { API_BASE_URL } from '../constants';
 
 import { useSongStore } from './stores/song';
 import { storeToRefs } from 'pinia';
@@ -42,7 +43,7 @@ const handleProfileClick = () => {
 
 const logout = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/v1/identity/auth/logout', {
+    const response = await fetch(`${API_BASE_URL}identity/auth/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +53,6 @@ const logout = async () => {
       }),
     });
     if (response.ok) {
-      console.log('Logout successful');
       router.push('/login');
     } else {
       console.error('Logout failed');
@@ -103,7 +103,6 @@ const profile = async () => {
     <div class="mt-[53px]"></div>
 
     <SideMenuItem iconString="music" :iconSize="20" pageUrl="/home" name="Music" />
-    <SideMenuItem iconString="podcast" :iconSize="20" pageUrl="/podcasts" name="Podcasts" />
     <SideMenuItem iconString="explore" :iconSize="20" pageUrl="/artist" name="Explore" />
     <SideMenuItem iconString="favourite" :iconSize="20" pageUrl="/favourite" name="Favourites" />
   </div>

@@ -7,16 +7,12 @@ import ShuffleVariant from 'vue-material-design-icons/ShuffleVariant.vue';
 import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
 import MicrophoneVariant from 'vue-material-design-icons/MicrophoneVariant.vue';
 import Plus from 'vue-material-design-icons/Plus.vue';
-import Tune from 'vue-material-design-icons/Tune.vue';
-import PictureInPictureBottomRight from 'vue-material-design-icons/PictureInPictureBottomRight.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import SkipBackward from 'vue-material-design-icons/SkipBackward.vue';
 import SkipForward from 'vue-material-design-icons/SkipForward.vue';
 import VolumeHigh from 'vue-material-design-icons/VolumeHigh.vue';
 import VolumeMute from 'vue-material-design-icons/VolumeMute.vue';
-
-import lyrics from '../lyrics.json'
 
 import uniqolor from 'uniqolor';
 

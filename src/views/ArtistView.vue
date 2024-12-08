@@ -20,6 +20,7 @@ const playFunc = () => {
   }
   useSong.playFromFirst()
 }
+
 </script>
 
 <template>
