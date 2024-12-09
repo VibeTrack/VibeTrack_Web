@@ -41,7 +41,6 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-    console.log('Login successful:', data.result.user);
     authStore.setAuthData(data.result.token, data.result.user);
     router.push('/home');
   } catch (err) {

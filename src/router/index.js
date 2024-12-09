@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import App from '@/App.vue';
 import HomeView from '../views/HomeView.vue';
-import ArtistView from '../views/ArtistView.vue';
+import PlaylistView from '../views/PlaylistView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import EditView from '@/views/EditView.vue';
+import ArtistView from '@/views/ArtistView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,18 +31,13 @@ const router = createRouter({
           component: HomeView,
         },
         {
+          path: 'playlist',
+          name: 'playlist',
+          component: PlaylistView,
+        },
+        {
           path: 'artist',
           name: 'artist',
-          component: ArtistView,
-        },
-        {
-          path: 'podcasts',
-          name: 'podcasts',
-          component: HomeView,
-        },
-        {
-          path: 'favourite',
-          name: 'favourite',
           component: ArtistView,
         },
         {

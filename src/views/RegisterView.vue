@@ -12,25 +12,21 @@ const lastName = ref('');
 const error = ref('');
 
 const handleRegister = async () => {
-  // Field validation
   if (!username.value || !password.value || !confirmPassword.value || !firstName.value || !lastName.value) {
     error.value = 'Please fill in all fields.';
     return;
   }
 
-  // Username length validation
   if (username.value.length < 4) {
     error.value = 'Username must be at least 4 characters long.';
     return;
   }
 
-  // Password length validation
   if (password.value.length < 8) {
     error.value = 'Password must be at least 8 characters long.';
     return;
   }
 
-  // Confirm password validation
   if (password.value !== confirmPassword.value) {
     error.value = 'Passwords do not match.';
     return;
@@ -53,7 +49,6 @@ const handleRegister = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      // Username uniqueness validation based on server response
       if (data.message.includes('Username already exists')) {
         error.value = 'Username already exists. Please choose another one.';
       } else {
@@ -62,7 +57,6 @@ const handleRegister = async () => {
       return;
     }
 
-    // On successful registration, redirect to login page
     router.push('/login');
   } catch (err) {
     error.value = 'An error occurred. Please try again later.';

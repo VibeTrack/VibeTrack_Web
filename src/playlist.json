@@ -1,0 +1,75 @@
+{
+  "name": "Ten Album",
+  "albumCover": "/images/albumCovers/DiariesOfAHero.png",
+  "releaseYear": "2014",
+  "artist": "Ten tac gia",
+  "songs": [
+    {
+      "songId": 1,
+      "songName": "Intro",
+      "url": "",
+      "lyrics": false
+    },
+    {
+      "songId": 2,
+      "songName": "Solitude",
+      "url": "/songs/Solitude.mp3",
+      "lyrics": true
+    },
+    {
+      "songId": 3,
+      "songName": "Manimal",
+      "url": "/songs/Manimal.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 4,
+      "songName": "J5",
+      "url": "/songs/J5.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 5,
+      "songName": "Throne",
+      "url": "http://192.168.201.109:9002/aurora/audio/1.mp3",
+      "lyrics": true,
+      "images": ""
+    },
+    {
+      "songId": 6,
+      "songName": "Scarwhores",
+      "url": "/songs/Scarwhores.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 7,
+      "songName": "Highschool Funeral",
+      "url": "/songs/Highschool Funeral.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 8,
+      "songName": "Get Away",
+      "url": "/songs/Get Away.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 9,
+      "songName": "Victims of Chaos",
+      "url": "/songs/Victims of Chaos.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 10,
+      "songName": "Neruda",
+      "url": "/songs/Neruda.mp3",
+      "lyrics": false
+    },
+    {
+      "songId": 11,
+      "songName": "Brother",
+      "url": "/songs/Brother.mp3",
+      "lyrics": false
+    }
+  ]
+}

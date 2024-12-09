@@ -1,6 +1,6 @@
 <template>
   <div class="pl-8">
-    <RouterLink to="/artist" class="cursor-pointer">
+    <RouterLink to="/playlist" class="cursor-pointer">
       <div class="relative" @mouseenter="isHover = true" @mouseleave="isHover = false">
         <div
           :class="isHover ? 'transition ease-in duration-150 bg-opacity-30' : 'transition ease-out duration-150 bg-opacity-5'"

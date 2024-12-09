@@ -33,7 +33,7 @@ import { watch, onMounted } from 'vue'
 import Close from 'vue-material-design-icons/Close.vue'
 import LyricRow from './LyricRow.vue'
 import lyrics from '../lyrics.json'
-import artist from '../artist.json'
+import artist from '../playlist.json'
 import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
 const useSong = useSongStore()

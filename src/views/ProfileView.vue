@@ -1,7 +1,7 @@
 <script setup>
 import MultiArtistSelect from '../components/MultiArtistSelect.vue';
 import SongRow from '../components/SongRow.vue';
-import artist from '../artist.json'
+import artist from '../playlist.json'
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
@@ -37,9 +37,7 @@ const authStore = useAuthStore();
 //     console.error('Fetch error:', err);
 //   }
 // }
-const profile = async () => {
-  router.push('/home');
-};
+
 const link = "https://i.scdn.co/image/1e626ce84397ca38f1b6722d6658417082f6aa28"
 
 let name = 'Bùi Minh Quân'
@@ -104,8 +102,8 @@ const handleFileUpload = (event) => {
 
     <div class="bg-gray pb-2">
       <div class="pl-8 flex">
-        <DotsHorizontal @click="profile" class="rounded-full hover:bg-[#979797] hover:bg-opacity-20 cursor-pointer"
-          fillColor="#CCCCCC" :size="35" />
+        <DotsHorizontal @click="$router.push('/home')"
+          class="rounded-full hover:bg-[#979797] hover:bg-opacity-20 cursor-pointer" fillColor="#CCCCCC" :size="35" />
       </div>
       <div class="px-8 mt-4 min-w-[800px]">
         <div class="text-white text-2xl font-bold inline-block">
@@ -116,15 +114,15 @@ const handleFileUpload = (event) => {
 
         <div class="flex justify-start gap-7 ">
           <MultiArtistSelect class="w-1/4"
-            text="Featuring Bring Me the Horizon, Our Last Night, Bad Omens, The Retaliators" to="/artist"
+            text="Featuring Bring Me the Horizon, Our Last Night, Bad Omens, The Retaliators" to="/playlist"
             :images=artist.albumCover />
           <MultiArtistSelect class="w-1/4"
-            text="Featuring Metallica, Jessye Norman, Dresdner Philharmonie, San Francisco Symphony" to="/artist"
+            text="Featuring Metallica, Jessye Norman, Dresdner Philharmonie, San Francisco Symphony" to="/playlist"
             :images=link />
-          <MultiArtistSelect class="w-1/4" text="Featuring Panter, Alden Karik, Arturiko, Krista Masalta" to="/artist"
+          <MultiArtistSelect class="w-1/4" text="Featuring Panter, Alden Karik, Arturiko, Krista Masalta" to="/playlist"
             :images=artist.albumCover />
           <MultiArtistSelect class="w-1/4" text="Featuring Machine Gun Kelly, Girlfriends, Mod Sun, Chri$tian Gate$"
-            to="/artist" :images=artist.albumCover />
+            to="/playlist" :images=artist.albumCover />
         </div>
       </div>
 
@@ -142,7 +140,7 @@ const handleFileUpload = (event) => {
 
         <div class="border border-gray-700 rounded-lg m-2">
           <div class="mt-1"></div>
-          <ul class="w-full mx-3 pr-16 min-w-[650px]" v-for="track in artist.tracks.slice(0, 4)" :key="track.id">
+          <ul class="w-full mx-3 pr-16 min-w-[650px]" v-for="track in artist.songs.slice(0, 4)" :key="track.id">
             <SongRow v-if="track" :track="track" />
           </ul>
         </div>

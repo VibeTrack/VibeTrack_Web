@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-between pb-5 ml-8 mr-6">
-      <RouterLink to="/artist" @mouseenter="isHoverCategory = true" @mouseleave="isHoverCategory = false"
+      <RouterLink to="/playlist" @mouseenter="isHoverCategory = true" @mouseleave="isHoverCategory = false"
         :class="isHoverCategory ? 'hover:text-[#EF5465]' : 'text-white'"
         class="flex items-center font-semibold text-xl cursor-pointer">
         {{ category }}

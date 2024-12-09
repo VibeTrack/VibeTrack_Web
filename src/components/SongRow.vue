@@ -1,42 +1,38 @@
 <template>
   <li @mouseenter="isHover = true" @mouseleave="isHover = false"
     class="flex items-center justify-between py-2 hover:bg-[#979797] hover:bg-opacity-5">
-    <div class="flex items-center w-[350px] p-1">
-      <div class="text-white mx-3 w-[20px] items-center">
-        {{ track.id }}
-      </div>
+    <div class="flex items-center w-[350px] p-1 pl-2">
       <div class="relative">
         <div v-if="isHover" class="p-1 mt-[2px] ml-[3px] absolute rounded-full bg-white cursor-pointer">
           <Play v-if="!isPlaying" @click="useSong.playOrPauseThisSong(artist, track)" />
-          <Play v-else-if="isPlaying && currentTrack.name !== track.name" @click="useSong.loadSong(artist, track)" />
+          <Play v-else-if="isPlaying && currentTrack.songName !== track.songName"
+            @click="useSong.loadSong(artist, track)" />
         </div>
-        <div v-if="track && currentTrack && currentTrack.name === track.name"
+        <div v-if="track && currentTrack && currentTrack.songName === track.songName"
           class="p-1 mt-[2px] ml-[3px] absolute rounded-full bg-white cursor-pointer">
           <Pause v-if="!isHover && isPlaying" :size="25" @click="useSong.playOrPauseSong()" />
 
         </div>
         <div @mouseenter="isHoverGif = true" @mouseleave="isHoverGif = false"
-          v-if="isPlaying && track && currentTrack && currentTrack.name === track.name"
+          v-if="isPlaying && track && currentTrack && currentTrack.songName === track.songName"
           class="p-1 mt-[2px] ml-[3px] absolute rounded-full bg-white cursor-pointer">
           <img v-if="!isHoverGif" src="/images/audio-wave.gif">
           <Pause v-if="isHoverGif" :size="25" @click="useSong.playOrPauseSong()" />
         </div>
-        <img width="37" class="border border-[#494949]" :src="artist.albumCover">
+        <img width="37" class="border border-[#494949] rounded-md" src="/images/music.png">
       </div>
       <div class="flex flex-col">
         <div v-if="track"
-          :class="track && currentTrack && currentTrack.name === track.name ? 'text-[#EF5464]' : 'text-white'"
+          :class="track && currentTrack && currentTrack.songName === track.songName ? 'text-[#EF5464]' : 'text-white'"
           class="text-sm pl-4 hover:underline cursor-pointer font-bold max-w-[300px] truncate overflow-hidden">
-          {{ track.name }}
-        </div>
-        <div class="text-gray-400 text-xs ml-4">
-          {{ artist.artist }}
+          {{ track.songName }}
         </div>
       </div>
     </div>
-    <div :class="track && currentTrack && currentTrack.name === track.name ? 'text-[#d4d4d4]' : 'text-[#d4d4d4]'"
+    <div
+      :class="track && currentTrack && currentTrack.songName === track.songName ? 'text-[#d4d4d4]' : 'text-[#d4d4d4]'"
       class="text-sm pl-4 hover:underline cursor-pointer">
-      {{ artist.name }}
+      {{ }}
     </div>
     <div class="flex items-center">
       <button @click="toggleDropdown"
@@ -45,14 +41,14 @@
         <DotsHorizontal fillColor="#CCCCCC" :size="21" />
       </button>
       <ul v-if="isDropdownOpen" id="dropdownMenu"
-        class="absolute top-full mt-2 w-35 bg-gray-900 text-white border border-gray-700 rounded-lg shadow-lg z-10">
-        <li class="flex px-4 py-2 hover:bg-gray-800 cursor-pointer text-sm">
+        class="absolute mt-2 w-35 bg-gray-900 text-white border border-gray-700 rounded-lg shadow-lg z-10">
+        <li @click="closeDropdown" class="flex px-4 py-2 hover:bg-gray-800 cursor-pointer text-sm">
           Add to playlist
         </li>
       </ul>
       <div v-if="isTrackTime"
-        :class="track && currentTrack && currentTrack.name === track.name ? 'text-[#EF5464]' : 'text-[#d4d4d4]'"
-        class="text-[13px] pl-10 font-[200] text-[#d4d4d4]">
+        :class="track && currentTrack && currentTrack.songName === track.songName ? 'text-[#EF5464]' : 'text-[#d4d4d4]'"
+        class="text-[13px] pl-10 font-[200] text-[#d4d4d4] pr-2">
         {{ isTrackTime }}
       </div>
     </div>
@@ -61,7 +57,7 @@
 
 <script setup>
 import { ref, toRefs, onMounted } from 'vue'
-import artist from '../artist.json'
+import artist from '../playlist.json'
 
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 
@@ -85,8 +81,12 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
+const closeDropdown = () => {
+  isDropdownOpen.value = false;
+};
+
 onMounted(() => {
-  const audioMeta = new Audio(track.value.path);
+  const audioMeta = new Audio(track.url);
   audioMeta.addEventListener('loadedmetadata', () => {
     const duration = audioMeta.duration;
     const minutes = Math.floor(duration / 60);

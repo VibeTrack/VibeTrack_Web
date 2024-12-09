@@ -103,7 +103,7 @@ const profile = async () => {
     <div class="mt-[53px]"></div>
 
     <SideMenuItem iconString="music" :iconSize="20" pageUrl="/home" name="Music" />
-    <SideMenuItem iconString="explore" :iconSize="20" pageUrl="/artist" name="Explore" />
+    <SideMenuItem iconString="explore" :iconSize="20" pageUrl="/playlist" name="Explore" />
     <SideMenuItem iconString="favourite" :iconSize="20" pageUrl="/favourite" name="Favourites" />
   </div>
 
