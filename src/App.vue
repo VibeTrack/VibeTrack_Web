@@ -89,6 +89,7 @@ const createPlaylist = async () => {
   } catch (error) {
     console.error('Error during fetch:', error);
   }
+  window.location.reload();
 }
 
 const logout = async () => {

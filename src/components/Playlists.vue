@@ -9,7 +9,7 @@
     <div class="grid grid-rows gap-4 overflow-y-auto max-h-[400px]">
       <div v-for="slide in data" :key="slide.playlistId" class="flex items-baseline w-full">
         <div class="w-full pr-2">
-          <RouterLink @click="playlistData(slide.playlistId)" :to="`/playlist/${slide.playlistId}`"
+          <RouterLink @click="playlistData(slide.playlistId)" :to="`/playlist/${playlistStore.playlistId}`"
             class="relative w-full">
             <div class="flex items-center bg-[#23232D] rounded-md h-[54px] relative w-full">
               <div class="flex items-center w-[54px]" @mouseenter="slide.isHover = true"
@@ -52,13 +52,16 @@ const { Playlist, data } = toRefs(props)
 
 const playlistData = (id) => {
   playlistStore.setPlaylistData(id);
+  // Kiểm tra playlistId không rỗng trước khi chuyển hướng
   if (id) {
-    router.push(`/playlist/${id}`);
+    router.push(`/playlist/${playlistStore.playlistId}`);
   }
 };
 
+// Theo dõi sự thay đổi của playlistId và reload trang khi thay đổi
 watch(() => playlistStore.playlistId, (newPlaylistId, oldPlaylistId) => {
   if (newPlaylistId !== oldPlaylistId && newPlaylistId) {
+    // Nếu playlistId thay đổi và không rỗng, reload trang
     router.go(0); // Điều này sẽ reload trang
   }
 });
