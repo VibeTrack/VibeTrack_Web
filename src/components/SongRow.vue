@@ -31,21 +31,10 @@
     </div>
     <div
       :class="track && currentTrack && currentTrack.songName === track.songName ? 'text-[#d4d4d4]' : 'text-[#d4d4d4]'"
-      class="text-sm pl-4 hover:underline cursor-pointer">
-      {{ }}
+      class="text-sm pl-4">
+      {{ track.artists[0].name }}
     </div>
     <div class="flex items-center">
-      <button @click="toggleDropdown"
-        class="rounded-full p-1.5 hover:bg-[#979797] hover:bg-opacity-20 cursor-pointer focus:outline-none"
-        type="button">
-        <DotsHorizontal fillColor="#CCCCCC" :size="21" />
-      </button>
-      <ul v-if="isDropdownOpen" id="dropdownMenu"
-        class="absolute mt-2 w-35 bg-gray-900 text-white border border-gray-700 rounded-lg shadow-lg z-10">
-        <li @click="closeDropdown" class="flex px-4 py-2 hover:bg-gray-800 cursor-pointer text-sm">
-          Add to playlist
-        </li>
-      </ul>
       <div v-if="isTrackTime"
         :class="track && currentTrack && currentTrack.songName === track.songName ? 'text-[#EF5464]' : 'text-[#d4d4d4]'"
         class="text-[13px] pl-10 font-[200] text-[#d4d4d4] pr-2">
@@ -57,9 +46,6 @@
 
 <script setup>
 import { ref, toRefs, onMounted } from 'vue'
-import artist from '../playlist.json'
-
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
 
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
@@ -67,23 +53,14 @@ import Pause from 'vue-material-design-icons/Pause.vue';
 import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
 const useSong = useSongStore()
-const { audio, isPlaying, currentTrack, isLyrics } = storeToRefs(useSong)
+const { audio, isPlaying, currentTrack } = storeToRefs(useSong)
 
 let isHover = ref(false)
 let isHoverGif = ref(false)
 let isTrackTime = ref('00:00')
 
-const isDropdownOpen = ref(false);
 const props = defineProps({ track: Object })
 const { track } = toRefs(props)
-
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
-const closeDropdown = () => {
-  isDropdownOpen.value = false;
-};
 
 onMounted(() => {
   const audioMeta = new Audio(track.url);

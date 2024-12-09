@@ -1,84 +1,65 @@
 <script setup>
-import MultiArtistSelect from '../components/MultiArtistSelect.vue';
+import { ref, onMounted } from 'vue';
 import SongRow from '../components/SongRow.vue';
-import artist from '../playlist.json'
-import Play from 'vue-material-design-icons/Play.vue';
-import Pause from 'vue-material-design-icons/Pause.vue';
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue';
-import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
+import { API_BASE_URL } from '../../constants';
 import { useRouter } from 'vue-router';
+import { avatar } from '../../constants';
 import { useAuthStore } from '@/stores/auth';
+import MixesInspiredBy from '@/components/MixesInspiredBy.vue';
+import { useSongStore } from '@/stores/song';
 
 const router = useRouter();
-const authStore = useAuthStore();
+const useSong = useSongStore()
 
-// const changeProfile = () => {
-//   try {
-//     const request = {
-//       id,
-//       firstName,
-//       lastName,
-//       userName,
-//     }
-//     const response = await fetch('', {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(request),
-//     })
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-
-//     const newUser = await response.json();
-//   } catch (error) {
-//     error.value = err.message; // Lưu thông báo lỗi
-//     console.error('Fetch error:', err);
-//   }
-// }
-
-const link = "https://i.scdn.co/image/1e626ce84397ca38f1b6722d6658417082f6aa28"
-
-let name = 'Bùi Minh Quân'
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      artist.value.albumCover = e.target.result;
-    };
-    reader.readAsDataURL(file);
+const user = JSON.parse(localStorage.getItem('user'));
+const userInfo = ref()
+const getUser = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}identity/users/${user.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
+    const data = await response.json();
+    userInfo.value = data.result;
+  } catch (error) {
+    console.error('Error during fetch:', error);
   }
 };
 
-// try {
-//   const response = await fetch('', {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       token: authStore.token,
-//     }),
-//   })
-//   console.log()
+const mixes = ref([]);
+const getMixes = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}aurora/playlists`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
+    const data = await response.json();
+    mixes.value = data.result;
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
+};
 
-// } catch (error) {
-//   console.error('Error during:', error);
-// }
+onMounted(() => {
+  getUser();
+  getMixes();
+});
 
 </script>
 
 <template>
-  <div class="border border-gray-700 rounded-lg m-2">
+  <div v-if="userInfo" class="border border-gray-700 rounded-lg m-2">
     <div id="HeaderSection" class="max-w-[1500px] mx-auto">
       <div class="flex items-center w-full relative h-full px-8 mt-6 min-w-[650px]">
         <label class="relative cursor-pointer">
-          <img width="175" class="rounded-full hover:opacity-80 transition" :src="artist.albumCover" alt="Album Cover">
-          <input type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            @change="handleFileUpload">
+          <img width="175" class="rounded-full hover:opacity-80 transition" :src="avatar" alt="Album Cover">
+          <input type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
         </label>
 
         <div class="ml-8">
@@ -87,7 +68,7 @@ const handleFileUpload = (event) => {
           </div>
           <div class="text-white text-7xl w-full hover:underline cursor-pointer font-bold"
             @click="$router.push('/edit-name')">
-            {{ name }}
+            {{ userInfo.firstName }}
           </div>
 
           <div class="py-1.5"></div>
@@ -101,35 +82,22 @@ const handleFileUpload = (event) => {
     <div class="mb-5"></div>
 
     <div class="bg-gray pb-2">
-      <div class="pl-8 flex">
-        <DotsHorizontal @click="$router.push('/home')"
-          class="rounded-full hover:bg-[#979797] hover:bg-opacity-20 cursor-pointer" fillColor="#CCCCCC" :size="35" />
-      </div>
       <div class="px-8 mt-4 min-w-[800px]">
         <div class="text-white text-2xl font-bold inline-block">
-          Playlist
+          Your Playlist
         </div>
 
         <div class="py-3"></div>
 
-        <div class="flex justify-start gap-7 ">
-          <MultiArtistSelect class="w-1/4"
-            text="Featuring Bring Me the Horizon, Our Last Night, Bad Omens, The Retaliators" to="/playlist"
-            :images=artist.albumCover />
-          <MultiArtistSelect class="w-1/4"
-            text="Featuring Metallica, Jessye Norman, Dresdner Philharmonie, San Francisco Symphony" to="/playlist"
-            :images=link />
-          <MultiArtistSelect class="w-1/4" text="Featuring Panter, Alden Karik, Arturiko, Krista Masalta" to="/playlist"
-            :images=artist.albumCover />
-          <MultiArtistSelect class="w-1/4" text="Featuring Machine Gun Kelly, Girlfriends, Mod Sun, Chri$tian Gate$"
-            to="/playlist" :images=artist.albumCover />
+        <div>
+          <MixesInspiredBy :data=mixes />
         </div>
       </div>
 
       <div class="px-8 mt-8 min-w-[800px]">
         <div class="flex flex-col">
           <div class="text-white text-2xl font-bold inline-block">
-            Top tracks
+            Currently Song List
           </div>
           <div class="text-white ml-3 text-xs">
             Only visible to you
@@ -140,7 +108,7 @@ const handleFileUpload = (event) => {
 
         <div class="border border-gray-700 rounded-lg m-2">
           <div class="mt-1"></div>
-          <ul class="w-full mx-3 pr-16 min-w-[650px]" v-for="track in artist.songs.slice(0, 4)" :key="track.id">
+          <ul class="w-full mx-3 pr-16 min-w-[650px]" v-for="track in useSong.queue" :key="track.id">
             <SongRow v-if="track" :track="track" />
           </ul>
         </div>

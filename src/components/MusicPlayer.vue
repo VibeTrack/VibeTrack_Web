@@ -3,23 +3,27 @@ import { ref, watch, onMounted } from 'vue'
 
 import MusicPlayerVolume from '../components/MusicPlayerVolume.vue'
 
-import ShuffleVariant from 'vue-material-design-icons/ShuffleVariant.vue';
-import HeartOutline from 'vue-material-design-icons/HeartOutline.vue';
-import MicrophoneVariant from 'vue-material-design-icons/MicrophoneVariant.vue';
 import Plus from 'vue-material-design-icons/Plus.vue';
+import Minus from 'vue-material-design-icons/Minus.vue';
 import Play from 'vue-material-design-icons/Play.vue';
 import Pause from 'vue-material-design-icons/Pause.vue';
 import SkipBackward from 'vue-material-design-icons/SkipBackward.vue';
 import SkipForward from 'vue-material-design-icons/SkipForward.vue';
 import VolumeHigh from 'vue-material-design-icons/VolumeHigh.vue';
 import VolumeMute from 'vue-material-design-icons/VolumeMute.vue';
+import Tune from 'vue-material-design-icons/Tune.vue';
+import { API_BASE_URL } from '../../constants';
+import { usePlaylistStore } from '@/stores/auth';
 
 import uniqolor from 'uniqolor';
 
 import { useSongStore } from '../stores/song'
 import { storeToRefs } from 'pinia';
+
+
 const useSong = useSongStore()
-const { isPlaying, audio, currentTrack, currentArtist, trackTime, isLyrics, currentVolume } = storeToRefs(useSong)
+const playlistStore = usePlaylistStore()
+const { isPlaying, audio, currentTrack, currentArtist, trackTime, currentVolume } = storeToRefs(useSong)
 
 let randColor = ref('')
 randColor.value = uniqolor.random()
@@ -31,7 +35,76 @@ let seeker = ref(null)
 let seekerContainer = ref(null)
 let range = ref(0)
 
+const allPlaylist = ref([]);
+const getAllPlaylists = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}aurora/playlists`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            },
+        });
+        const data = await response.json();
+        allPlaylist.value = data.result;
+    } catch (error) {
+        console.error('Error during fetch:', error);
+    }
+};
+
+const playlistDropdownOpen = ref(false);
+
+const playlistDropdown = () => {
+    playlistDropdownOpen.value = !playlistDropdownOpen.value;
+};
+
+const remove = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}aurora/playlists/${playlistStore.playlistId}/remove/${currentTrack.value.songId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Song removed successfully:', data);
+        } else {
+            console.error('Failed to remove song to playlist', response.status);
+        }
+    } catch (error) {
+        console.error('Error during fetch:', error);
+    }
+};
+
+const selectPlaylist = async (playlist) => {
+    playlistStore.setPlaylistData(playlist.playlistId);
+    try {
+        const response = await fetch(`${API_BASE_URL}aurora/playlists/${playlistStore.playlistId}/add/${currentTrack.value.songId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Song added successfully:', data);
+        } else {
+            console.error('Failed to add song to playlist', response.status);
+        }
+    } catch (error) {
+        console.error('Error during fetch:', error);
+    }
+    playlistDropdownOpen.value = false;
+    window.location.reload()
+};
+
 onMounted(() => {
+    getAllPlaylists();
     if (audio.value) {
         setTimeout(() => {
             timeupdate()
@@ -88,26 +161,6 @@ watch(() => isTrackTimeCurrent.value, (time) => {
         useSong.nextSong(currentTrack.value)
     }
 })
-watch(() => currentTrack.value.id, (val) => {
-    randColor.value = uniqolor.random()
-    if (currentTrack.value.lyrics) {
-        isLyrics.value = true
-        return
-    }
-    isLyrics.value = false
-})
-
-const openLyrics = (track, artist) => {
-    if (audio.value && !audio.value.paused && track.id === currentTrack.value.id) {
-        isLyrics.value = true
-    } else if (audio.value && audio.value.paused && track.id === currentTrack.value.id) {
-        useSong.playOrPauseSong()
-        isLyrics.value = true
-    } else {
-        useSong.playOrPauseThisSong(artist, track)
-        setTimeout(() => isLyrics.value = true, 500)
-    }
-}
 </script>
 
 <template>
@@ -127,10 +180,10 @@ const openLyrics = (track, artist) => {
         ">
         <div class="flex items-center w-2/12">
             <div class="flex items-center justify-center h-[30px] pl-4">
-                <button type="button" :disabled="currentTrack.id === 1"
-                    :class="{ 'rounded-full hover:bg-[#363636]': currentTrack.id !== 1 }" class="mx-2 p-2"
+                <button type="button" :disabled="currentTrack.songId === 1"
+                    :class="{ 'rounded-full hover:bg-[#363636]': currentTrack.songId !== 1 }" class="mx-2 p-2"
                     @click="useSong.prevSong(currentTrack)">
-                    <SkipBackward :fillColor="currentTrack.id === 1 ? '#747474' : '#FFFFFF'" :size="25" />
+                    <SkipBackward :fillColor="currentTrack.songId === 1 ? '#747474' : '#FFFFFF'" :size="25" />
                 </button>
                 <button type="button" class="p-2 rounded-full hover:bg-[#363636]"
                     @click="useSong.playOrPauseThisSong(currentArtist, currentTrack)">
@@ -147,17 +200,21 @@ const openLyrics = (track, artist) => {
         <div class=" mb-2.5 w-full max-w-[50%] mx-10">
             <div class="flex items-center justify-between pl-1 relative top-1 mx-7">
                 <div class="flex items-center">
-                    <div class="bg-[#2E2E39] py-0.5 px-1 text-[10px] text-[#72727D]">ALBUM</div>
-                    <div class="text-white text-[14px] font-[300] ml-3">{{ currentTrack.name }}</div>
-                    <div class="text-white relative -top-1 left-[6px]">.</div>
-                    <div class="text-white text-[14px] font-[300] ml-3">{{ currentArtist.name }}</div>
+                    <div class="text-white text-[14px] font-[300] ml-3">{{ currentTrack.songName }}</div>
                 </div>
                 <div class="flex items-center">
-                    <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                        <Plus fillColor="#FFFFFF" :size="20" />
+                    <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer relative">
+                        <Plus fillColor="#FFFFFF" :size="20" @click="playlistDropdown" />
+                        <ul v-if="playlistDropdownOpen"
+                            class="absolute bottom-full right-0 mb-2 w-48 bg-gray-800 text-white border border-gray-700 rounded-lg shadow-lg z-10">
+                            <li v-for="playlist in allPlaylist" :key="playlist" @click="selectPlaylist(playlist)"
+                                class="px-4 py-2 hover:bg-gray-700 cursor-pointer text-sm">
+                                {{ playlist.name }}
+                            </li>
+                        </ul>
                     </div>
-                    <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                        <HeartOutline fillColor="#FFFFFF" :size="20" />
+                    <div class="p-1.5 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer relative">
+                        <Minus fillColor="#FFFFFF" :size="20" @click="remove" />
                     </div>
                 </div>
             </div>
@@ -197,13 +254,6 @@ const openLyrics = (track, artist) => {
 
         <div class="flex items-center w-1/4 justify-end pr-6 ">
             <div class="flex items-center">
-                <div v-if="currentTrack.lyrics" @click="openLyrics(currentTrack, currentArtist)"
-                    class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                    <MicrophoneVariant class="block" fillColor="#FFFFFF" :size="17" />
-                </div>
-                <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
-                    <ShuffleVariant class="block" fillColor="#FFFFFF" :size="17" />
-                </div>
                 <div @mouseenter="isVolumeHover = true" @mouseleave="isVolumeHover = false" class="relative">
                     <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
                         <VolumeHigh v-if="currentVolume > 0" class="block" fillColor="#FFFFFF" :size="17" />
@@ -213,6 +263,9 @@ const openLyrics = (track, artist) => {
                         class="absolute -top-12 -left-20 p-2 px-4 bg-[#2a2a37] rounded-xl shadow-xl">
                         <MusicPlayerVolume />
                     </div>
+                </div>
+                <div class="p-2 ml-2 hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
+                    <Tune class="block" fillColor="#FFFFFF" :size="17" />
                 </div>
             </div>
         </div>

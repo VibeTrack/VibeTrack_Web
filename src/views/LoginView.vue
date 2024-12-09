@@ -5,7 +5,6 @@ import { useAuthStore } from '@/stores/auth';
 import { API_BASE_URL } from '../../constants';
 
 const authStore = useAuthStore();
-
 const router = useRouter();
 const username = ref('');
 const password = ref('');
@@ -41,7 +40,12 @@ const handleLogin = async () => {
     }
 
     const data = await response.json();
-    authStore.setAuthData(data.result.token, data.result.user);
+    const token = data.result.token;
+    const user = data.result.user;
+
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+
     router.push('/home');
   } catch (err) {
     error.value = 'An error occurred. Please try again later.';

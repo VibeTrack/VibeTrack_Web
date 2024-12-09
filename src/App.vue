@@ -1,31 +1,39 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink } from 'vue-router';
 import { useRouter } from 'vue-router';
 
-
+import Plus from 'vue-material-design-icons/Plus.vue';
 import Magnify from 'vue-material-design-icons/Magnify.vue';
-import SideMenuItem from './components/SideMenuItem.vue';
 import MusicPlayer from './components/MusicPlayer.vue';
-import SongLyrics from './components/SongLyrics.vue';
-import { API_BASE_URL } from '../constants';
+import Playlists from './components/Playlists.vue';
+import { API_BASE_URL, avatar } from '../constants';
 
 import { useSongStore } from './stores/song';
 import { storeToRefs } from 'pinia';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore, usePlaylistStore, useSearchStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
+const playlistStore = usePlaylistStore();
 const useSong = useSongStore();
+const searchStore = useSearchStore();
 const router = useRouter();
+const user = JSON.parse(localStorage.getItem('user'));
 
-const { isPlaying, currentTrack, isLyrics, trackTime } = storeToRefs(useSong);
-
+const { isPlaying, currentTrack, trackTime } = storeToRefs(useSong);
+const searchQuery = ref('');
 const isDropdownOpen = ref(false);
 
 onBeforeMount(() => {
   isPlaying.value = false;
-  isLyrics.value = false;
   trackTime.value = '0:00';
+});
+
+watch(searchQuery, (newQuery) => {
+  if (newQuery) {
+    router.push(`/search/${newQuery}`);
+    searchStore.setSearchtData(newQuery);
+  }
 });
 
 const toggleDropdown = () => {
@@ -41,6 +49,48 @@ const handleProfileClick = () => {
   closeDropdown();
 };
 
+const playlist = ref([]);
+const getPlaylists = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}aurora/playlists`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
+    const data = await response.json();
+    playlist.value = data.result;
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
+};
+
+onMounted(async () => {
+  getPlaylists();
+});
+
+const createPlaylist = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}aurora/playlists`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      router.push(`/playlist/${data.result.playlistId}`);
+      playlistStore.setPlaylistData(data.result.playlistId)
+    } else {
+      console.error('Failed to create playlist');
+    }
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
+}
+
 const logout = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}identity/auth/logout`, {
@@ -49,7 +99,7 @@ const logout = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        token: authStore.token,
+        token: localStorage.getItem('authToken'),
       }),
     });
     if (response.ok) {
@@ -62,7 +112,7 @@ const logout = async () => {
   }
 };
 const profile = async () => {
-  router.push('/profile');
+  router.push(`/profile/${user.id}`);
 };
 </script>
 
@@ -71,15 +121,14 @@ const profile = async () => {
     class="fixed right-0 flex items-center justify-between w-[calc(100%-240px)] h-[49px] border-b border-b-[#32323D] bg-[#191922] z-30">
     <div class="flex items-center w-full">
       <Magnify class="pl-6 mt-1 pr-2" fillColor="#7E7E88" :size="22" />
-      <input class="p-1 bg-transparent outline-none font-[300] placeholder-[#BEBEC7] text-[#FFFFFF] w-full max-w-xl"
+      <input v-model="searchQuery"
+        class="p-1 bg-transparent outline-none font-[300] placeholder-[#BEBEC7] text-[#FFFFFF] w-full max-w-xl"
         placeholder="Search" type="text" />
     </div>
 
     <div class="flex items-center pr-10 relative">
       <button @click="toggleDropdown">
-        <img class="rounded-full w-[33px] ml-4"
-          src="https://yt3.ggpht.com/e9o-24_frmNSSVvjS47rT8qCHgsHNiedqgXbzmrmpsj6H1ketcufR1B9vLXTZRa30krRksPj=s88-c-k-c0x00ffffff-no-rj-mo"
-          alt="User Avatar" />
+        <img class="rounded-full w-[33px] ml-4" :src="avatar" />
       </button>
       <ul v-if="isDropdownOpen" id="dropdownMenu"
         class="absolute top-full right-10 mt-2 w-35 bg-gray-900 text-white border border-gray-700 rounded-lg shadow-lg z-10">
@@ -95,24 +144,32 @@ const profile = async () => {
 
   <div id="SideNav" class="fixed w-[240px] bg-[#191922] h-[100vh] border-r border-r-[#32323D] z-20">
     <div class="w-full pl-6 pt-3 cursor-pointer">
-      <RouterLink to="/" class="text-white">
-        VIBETRACK
-      </RouterLink>
+      <div class="flex justify-between items-center">
+        <RouterLink to="/home" class="text-white my-auto">
+          <div class="flex">
+            <img src="/images/sound-icon.png" width="60">
+            <div class="font-semibold mt-auto pl-2"> VibeTrack </div>
+          </div>
+        </RouterLink>
+        <div @click="createPlaylist"
+          class="p-1.5 mr-1 justify-end hover:bg-[#5a5a5a] hover:bg-opacity-50 rounded-full cursor-pointer">
+          <Plus fillColor="#FFFFFF" :size="20" />
+        </div>
+      </div>
     </div>
-
+    <div class="mt-[53px] pl-4">
+      <Playlists Playlist="Playlist" :data=playlist />
+    </div>
     <div class="mt-[53px]"></div>
 
-    <SideMenuItem iconString="music" :iconSize="20" pageUrl="/home" name="Music" />
-    <SideMenuItem iconString="explore" :iconSize="20" pageUrl="/playlist" name="Explore" />
-    <SideMenuItem iconString="favourite" :iconSize="20" pageUrl="/favourite" name="Favourites" />
+
   </div>
 
   <div id="mainContent"
-    class="fixed w-[calc(100%-240px)] h-[calc(100%-56px)] ml-[240px] mt-[49px] overflow-x-auto overflow-y -auto z-10">
+    class="fixed w-[calc(100%-240px)] h-[calc(100%-56px)] ml-[240px] mt-[49px] overflow-x-auto overflow-y-auto z-10">
     <RouterView id="routerView" />
   </div>
 
   <MusicPlayer v-if="currentTrack" />
 
-  <SongLyrics v-if="isLyrics" :class="{ 'animate__animated animate__slideInUp animate__faster': isLyrics }" />
 </template>

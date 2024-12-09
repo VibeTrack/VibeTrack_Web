@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import artist from '../playlist.json'
 
 export const useSongStore = defineStore('song', {
   state: () => ({
@@ -9,8 +8,8 @@ export const useSongStore = defineStore('song', {
     currentTrack: null,
     trackTime: null,
     currentVolume: 80,
-    isLyrics: false,
-    lyricsPosition: '0:00'
+    queue: [], // Danh sách phát (queue)
+    currentQueueIndex: 0, // Chỉ mục bài hát hiện tại trong queue
   }),
   actions: {
     loadSong(artist, track) {
@@ -51,25 +50,33 @@ export const useSongStore = defineStore('song', {
       this.playOrPauseSong()
     },
 
-    prevSong(currentTrack) {
-      let track = artist.songs[currentTrack.songId - 2]
-      this.loadSong(artist, track)
+    prevSong() {
+      if (this.currentQueueIndex > 0) {
+        this.currentQueueIndex--
+        this.loadSong(this.currentArtist, this.queue[this.currentQueueIndex])
+      }
     },
 
-    nextSong(currentTrack) {
-      if (currentTrack.songId === artist.songs.length) {
-        let track = artist.songs[0]
-        this.loadSong(artist, track)
+    nextSong() {
+      if (this.currentQueueIndex < this.queue.length - 1) {
+        this.currentQueueIndex++
+        this.loadSong(this.currentArtist, this.queue[this.currentQueueIndex])
       } else {
-        let track = artist.songs[currentTrack.songId]
-        this.loadSong(artist, track)
+        this.currentQueueIndex = 0
+        this.loadSong(this.currentArtist, this.queue[0])
+      }
+    },
+
+    addToQueue(track) {
+      if (!this.queue.some(existingTrack => existingTrack.songId === track.songId)) {
+        this.queue.push(track)
       }
     },
 
     playFromFirst() {
       this.resetState()
-      let track = artist.songs[0]
-      this.loadSong(artist, track)
+      this.currentQueueIndex = 0
+      this.loadSong(this.currentArtist, this.queue[0])
     },
 
     resetState() {
@@ -77,6 +84,8 @@ export const useSongStore = defineStore('song', {
       this.audio = null
       this.currentArtist = null
       this.currentTrack = null
+      this.queue = [] // Reset queue
+      this.currentQueueIndex = 0
     }
   },
   persist: true

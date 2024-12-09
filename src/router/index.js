@@ -7,6 +7,8 @@ import RegisterView from '../views/RegisterView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import EditView from '@/views/EditView.vue';
 import ArtistView from '@/views/ArtistView.vue';
+import AlbumView from '@/views/AlbumView.vue';
+import SearchView from '@/views/SearchView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,24 +33,35 @@ const router = createRouter({
           component: HomeView,
         },
         {
-          path: 'playlist',
+          path: 'playlist/:id',
           name: 'playlist',
           component: PlaylistView,
         },
         {
-          path: 'artist',
+          path: 'artist/:id',
           name: 'artist',
           component: ArtistView,
         },
         {
-          path: 'profile',
+          path: 'profile/:id',
           name: 'profile',
           component: ProfileView,
+        },
+        {
+          path: 'album/:id',
+          name: 'album',
+          component: AlbumView,
+        },
+        {
+          path: 'search/:query',
+          name: 'search',
+          component: SearchView,
+          props: true,  // Để truyền tham số vào component dưới dạng props
         },
       ],
     },
     {
-      path: '/edit-name',
+      path: '/edit-name/:id',
       name: 'EditName',
       component: EditView,
     },
